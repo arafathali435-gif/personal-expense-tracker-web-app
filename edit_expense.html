@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Expense</title>
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="auth-box">
+
+<h2>Edit Expense</h2>
+
+<form action="/update/{{expense.id}}"
+method="POST">
+
+<input type="number"
+name="amount"
+value="{{expense.amount}}"
+required>
+
+<input type="date"
+name="date"
+value="{{expense.expense_date}}"
+required>
+
+<select name="category">
+
+<option>{{expense.category}}</option>
+<option>Food</option>
+<option>Transport</option>
+<option>Bills</option>
+<option>Shopping</option>
+<option>Health</option>
+
+</select>
+
+<input type="text"
+name="notes"
+value="{{expense.notes}}">
+
+<button>
+Update
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

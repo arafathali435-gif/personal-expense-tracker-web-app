@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expense Tracker</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Expense Tracker</h1>
+<h2>
+Welcome,
+{{ session['username'] }}
+</h2>
+
+<a href="/logout">
+Logout
+</a>
+
+<form action="/add" method="POST">
+
+<input type="number"
+name="amount"
+placeholder="Amount" required>
+
+<select name="category">
+
+<option>Food</option>
+<option>Transport</option>
+<option>Bills</option>
+<option>Shopping</option>
+<option>Health</option>
+
+</select>
+
+<input type="date" name="date">
+
+<input type="text"
+name="notes"
+placeholder="Notes">
+
+<button>Add Expense</button>
+
+</form>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Expenses</h3>
+<h2 id="totalExpense">₹0</h2>
+</div>
+
+<div class="card">
+<h3>Total Records</h3>
+<h2>{{ expenses|length }}</h2>
+</div>
+
+<div class="card">
+<h3>Currency</h3>
+<h2>INR ₹</h2>
+</div>
+
+</div>
+
+<h2>Monthly Budget</h2>
+
+<form action="/set_budget" method="POST">
+
+    <input
+        type="month"
+        name="month"
+        required
+    >
+
+    <input
+        type="number"
+        name="amount"
+        placeholder="Budget Amount"
+        required
+    >
+
+    <button type="submit">
+        Set Budget
+    </button>
+
+</form>
+
+<form method="GET">
+
+<input
+type="text"
+name="search"
+placeholder="Search notes">
+
+<select name="category">
+
+<option>All</option>
+<option>Food</option>
+<option>Transport</option>
+<option>Bills</option>
+<option>Shopping</option>
+<option>Health</option>
+
+</select>
+
+<button>
+Filter
+</button>
+
+</form>
+
+<div class="chart-box">
+    <canvas id="pieChart" width="300" height="300"></canvas>
+</div>
+
+<div class="chart-box">
+    <canvas id="lineChart"></canvas>
+</div>
+
+<table>
+
+<tr>
+<th>Amount</th>
+<th>Category</th>
+<th>Date</th>
+<th>Notes</th>
+<th>Action</th>
+</tr>
+
+{% for expense in expenses %}
+
+<tr>
+
+<td class="amount">₹{{ expense.amount }}</td>
+<td>{{ expense.category }}</td>
+<td>{{ expense.expense_date }}</td>
+<td>{{ expense.notes }}</td>
+
+<td>
+    <a href="/edit/{{ expense.id }}">Edit</a>
+    |
+    <a href="/delete/{{ expense.id }}">Delete</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<canvas id="expenseChart"></canvas>
+
+</div>
+
+<script src="{{ url_for('static',
+filename='js/dashboard.js') }}"></script>
+
+<script>
+
+let total = 0;
+
+document.querySelectorAll(".amount").forEach(item => {
+
+    total += parseFloat(
+        item.innerText.replace("₹", "")
+    );
+
+});
+
+document.getElementById("totalExpense").innerHTML =
+    "₹" + total.toFixed(2);
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx = document.getElementById('pieChart');
+
+new Chart(ctx, {
+
+    type: 'pie',
+
+    data: {
+
+        labels: [
+            'Food',
+            'Transport',
+            'Bills',
+            'Shopping',
+            'Health'
+        ],
+
+        datasets: [{
+
+            data: [
+                500,
+                300,
+                200,
+                100,
+                150
+            ]
+
+        }]
+    }
+
+});
+
+</script>
+
+<script>
+
+const line = document.getElementById('lineChart');
+
+new Chart(line, {
+
+    type: 'line',
+
+    data: {
+
+        labels: [
+            'Week1',
+            'Week2',
+            'Week3',
+            'Week4'
+        ],
+
+        datasets: [{
+            label: 'Spending',
+            data: [1200,900,1500,700]
+        }]
+    }
+
+});
+
+</script>
+
+</body>
+</html>
